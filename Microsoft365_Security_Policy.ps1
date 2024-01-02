@@ -6,7 +6,7 @@ Start-Sleep -Seconds 3
 #INSTALACJA MODUŁÓW
 function Modules {
     Write-Host "Instaluje wymagane moduły Microsoft 365 dla Powershell..." -ForegroundColor Yellow
-    Install-Module ExchangeOnline -Force -AllowClobber
+    Install-Module ExchangeOnlineManagement -Force -AllowClobber
     Install-Module MSOnline -Force -AllowClobber
 }
 
@@ -313,8 +313,8 @@ function AntiMalwarePolicy {
     New-MalwareFilterRule -Name $malwareRuleName -Priority 0 -MalwareFilterPolicy $malwarePolicyName -RecipientDomainIs $domains
 }
 
-#Modules
+Modules
 #Login
 #AntiPhisingPolicy
 #AntiSpamPolicy
-AntiMalwarePolicy
+#AntiMalwarePolicy
