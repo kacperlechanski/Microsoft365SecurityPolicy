@@ -12,6 +12,7 @@ function Modules {
 
 #LOGOWANIE#
 function Login {
+    Write-Host "Logowanie do wymaganych modułów.." -ForegroundColor Yellow
     Connect-ExchangeOnline
     Connect-MsolService
 }
@@ -367,6 +368,7 @@ function SafeLinks {
     Start-Sleep -Seconds 3
     Set-SafeLinksRule -Identity $safeLinksRuleName -Enabled $true -Priority 0 -RecipientDomainIs $domains
 }
+
 #Modules
 #Login
 #AntiPhisingPolicy
