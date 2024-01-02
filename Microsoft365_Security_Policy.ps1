@@ -114,10 +114,10 @@ function AntiSpamPolicy {
 
     #REGUŁA
     $spamRuleName = Read-Host "Podaj nazwe reguły spamowej: " #Podajemy nazwę reguły
-    New-HostedContentFilterRule -Name $spamRuleName -HostedContentFilterPolicy $spamPolicyName -Enabled $true -Priority 0 -RecipientDomainIs $domains
-
     Write-Host "Tworzę regułę ANTYSPAMOWĄ.." -ForegroundColor Yellow
     Start-Sleep -Seconds 3
+    New-HostedContentFilterRule -Name $spamRuleName -HostedContentFilterPolicy $spamPolicyName -Enabled $true -Priority 0 -RecipientDomainIs $domains
+
 }
 
 ######################################################################################################################################################
@@ -127,6 +127,8 @@ function AntiSpamPolicy {
 function AntiMalwarePolicy {
     Write-Host "Tworzę udostępnioną skrzynkę malware@ do powiadomień o zablokowanej zawartości w malware w plikach lub mailach.." -ForegroundColor Yellow
     New-Mailbox -Shared -Name "Malware" -DisplayName "Malware" -Alias "Malware"
+    Write-Host "Blokowanie logowania skrzynki malware@.." -ForegroundColor Yellow
+    Set-MsolUser -DisplayName Malware -BlockCredential $true
 
     $malwarePolicyName = Read-Host "Podaj nazwę polityki ANTYMALWARE: " #podajemy nazwę polityki
     New-MalwareFilterPolicy -Name $malwarePolicyName
@@ -304,8 +306,11 @@ function AntiMalwarePolicy {
     Set-MalwareFilterPolicy -Identity $malwarePolicyName -EnableFileFilter $true -FileTypes $filesExtensions
     Set-MalwareFilterPolicy -Identity $malwarePolicyName -FileTypeAction Reject
     Set-MalwareFilterPolicy -Identity $malwarePolicyName -QuarantineTag AdminOnlyAccess
-    Set-MalwareFilterPolicy -Identity $malwarePolicyName -EnableInternalSenderAdminNotifications $true -InternalSenderAdminAddress AD_SYNC@voltasp.pl
-    Set-MalwareFilterPolicy -Identity $malwarePolicyName -EnableExternalSenderAdminNotifications $true -ExternalSenderAdminAddress malware@voltahurt.pl
+
+    $adminMail = Read-Host-Host "Podaj adres administratora do powiadomień o zainfekowanych plikach "
+    Set-MalwareFilterPolicy -Identity $malwarePolicyName -EnableInternalSenderAdminNotifications $true -InternalSenderAdminAddress $adminMail
+    $malwareMail = Read-Host "Podaj adres stworzonej skrzynki udostępnionej do powiadomień o malware "
+    Set-MalwareFilterPolicy -Identity $malwarePolicyName -EnableExternalSenderAdminNotifications $true -ExternalSenderAdminAddress $malwareMail
     Set-MalwareFilterPolicy -Identity $malwarePolicyName -CustomNotifications $false
 
     #REGUŁA
@@ -313,8 +318,55 @@ function AntiMalwarePolicy {
     New-MalwareFilterRule -Name $malwareRuleName -Priority 0 -MalwareFilterPolicy $malwarePolicyName -RecipientDomainIs $domains
 }
 
-Modules
+######################################################################################################################################################
+
+##########################################POLITYKA BEZPIECZNYCH ZAŁĄCZNIKÓW
+function SafeAttachments {
+    $safeAttachmentsPolicyName = Read-Host "Podaj nazwe polityki bezpiecznych załączników "
+    New-SafeAttachmentPolicy -Name $safeAttachmentsPolicyName
+    Write-Host "Tworzę politykę bezpiecznych załączników.." -ForegroundColor Yellow
+    Start-Sleep -Seconds 3
+    Set-SafeAttachmentPolicy -Identity $safeAttachmentsPolicyName -Enabled $true -Action Block -QuarantineTag AdminOnlyAccessPolicy
+
+    $safeAttachmentRuleName = Read-Host "Podaj nazwę reguły bezpiecznych załączników "
+    New-SafeAttachmentRule -Name $safeAttachmentRuleName -SafeAttachmentPolicy $safeAttachmentsPolicyName
+    Write-Host "Tworzę reguły bezpiecznych załączników.." -ForegroundColor Yellow
+    Start-Sleep -Seconds 3
+    Set-SafeAttachmentRule -Identity $safeAttachmentRuleName -Enabled $true -Priority 0 -RecipientDomainIs $domains
+}
+
+
+######################################################################################################################################################
+
+##########################################POLITYKA BEZPIECZNYCH LINKÓW
+
+function SafeLinks {
+    $safeLinksPolicyName = Read-Host "Podaj nazwę polityki bezpiecznych linków "
+    New-SafeLinksPolicy -Name $safeLinksPolicyName
+    Write-Host "Tworzę politykę bezpiecznych linków.." -ForegroundColor Yellow
+    Start-Sleep -Seconds 3
+
+    #USTAWIENIA
+    Set-SafeLinksPolicy -Enabled $true -Identity $safeLinksPolicyName -EnableSafeLinksForEmail $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -EnableForInternalSenders $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -DeliverMessageAfterScan $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -EnableOrganizationBranding $false
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -CustomNotifications $false
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -AllowClickThrough $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -DisableUrlRewrite $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -DoNotRewriteUrls $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -EnableSafeLinksForOffice $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -EnableSafeLinksForTeams $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -ScanUrls $true
+    Set-SafeLinksPolicy -Identity $safeLinksPolicyName -TrackClicks $true
+
+
+
+}
+#Modules
 #Login
 #AntiPhisingPolicy
 #AntiSpamPolicy
 #AntiMalwarePolicy
+#SafeAttachments
+#SafeLinks
