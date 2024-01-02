@@ -327,13 +327,15 @@ function SafeAttachments {
     New-SafeAttachmentPolicy -Name $safeAttachmentsPolicyName
     Write-Host "Tworzę politykę bezpiecznych załączników.." -ForegroundColor Yellow
     Start-Sleep -Seconds 3
-    Set-SafeAttachmentPolicy -Identity $safeAttachmentsPolicyName -Enabled $true -Action Block -QuarantineTag AdminOnlyAccessPolicy
+    Set-SafeAttachmentPolicy -Identity $safeAttachmentsPolicyName -Enable $true
+    Set-SafeAttachmentPolicy -Identity $safeAttachmentsPolicyName -Action Block
+    Set-SafeAttachmentPolicy -Identity $safeAttachmentsPolicyName -QuarantineTag AdminOnlyAccessPolicy
 
     $safeAttachmentRuleName = Read-Host "Podaj nazwę reguły bezpiecznych załączników "
     New-SafeAttachmentRule -Name $safeAttachmentRuleName -SafeAttachmentPolicy $safeAttachmentsPolicyName
     Write-Host "Tworzę reguły bezpiecznych załączników.." -ForegroundColor Yellow
     Start-Sleep -Seconds 3
-    Set-SafeAttachmentRule -Identity $safeAttachmentRuleName -Enabled $true -Priority 0 -RecipientDomainIs $domains
+    Set-SafeAttachmentRule -Identity $safeAttachmentRuleName -Priority 0 -RecipientDomainIs $domains
 }
 
 
