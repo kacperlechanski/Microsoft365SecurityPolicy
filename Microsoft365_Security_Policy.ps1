@@ -361,7 +361,11 @@ function SafeLinks {
     Set-SafeLinksPolicy -Identity $safeLinksPolicyName -TrackClicks $true
 
 
-
+    $safeLinksRuleName = Read-Host "Podaj nazwę reguły bezpiecznych linków "
+    New-SafeLinksRule -Identity $safeLinksRuleName -SafeLinksPolicy $safeLinksPolicyName
+    Write-Host "Tworzę regułe bezpiecznych linków.." -ForegroundColor Yellow
+    Start-Sleep -Seconds 3
+    Set-SafeLinksRule -Identity $safeLinksRuleName -Enabled $true -Priority 0 -RecipientDomainIs $domains
 }
 #Modules
 #Login
