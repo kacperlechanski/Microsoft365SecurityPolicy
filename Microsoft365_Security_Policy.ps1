@@ -127,7 +127,7 @@ function AntiSpamPolicy {
 
 function AntiMalwarePolicy {
     Write-Host "Tworzę udostępnioną skrzynkę malware@ do powiadomień o zablokowanej zawartości w malware w plikach lub mailach.." -ForegroundColor Yellow
-    New-Mailbox -Shared -Name "Malware" -DisplayName "Malware" -Alias "Malware"
+    New-Mailbox -Shared -Name "Malware" -DisplayName "Malware" -Alias "malware"
     Write-Host "Blokowanie logowania skrzynki malware@.." -ForegroundColor Yellow
     Set-MsolUser -DisplayName Malware -BlockCredential $true
 
