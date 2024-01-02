@@ -388,4 +388,4 @@ function Informations {
 #AntiMalwarePolicy
 #SafeAttachments
 #SafeLinks
-Informations
+#Informations
