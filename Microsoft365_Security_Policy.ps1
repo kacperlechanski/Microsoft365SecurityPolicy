@@ -371,6 +371,16 @@ function SafeLinks {
     Set-SafeLinksRule -Identity $safeLinksRuleName -Enabled $true -Priority 0 -RecipientDomainIs $domains
 }
 
+######################################################################################################################################################
+
+##########################################ZAKOŃCZENIE
+
+function Informations {
+    Write-Host "Skrypt wdrożył ustawienia zgodnie z przygotowanym standardem polityk bezpieczeństwa." -ForegroundColor Yellow
+    Write-Host "Pamiętaj, aby sprawdzić wdrożone ustawienia. Muszą być one zgodne z przygotowanym standarem, który jest dostępny pod linkiem: https://confluence.directit.pl:8443/pages/viewpage.action?pageId=120816516" -ForegroundColor Red
+    
+}
+
 #Modules
 #Login
 #AntiPhisingPolicy
@@ -378,3 +388,4 @@ function SafeLinks {
 #AntiMalwarePolicy
 #SafeAttachments
 #SafeLinks
+Informations
